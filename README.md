@@ -1,5 +1,5 @@
 An in-circuit programmer for the FLASH on a [2063-Z80](https://github.com/johnwinans/2063-Z80) board.
-
+Updated by me to support the AM29F010B flash chip, too.
 
 * A youtube playlist discussing this project and how to build your own can be found in [John's Basement](https://www.youtube.com/watch?v=oekucjDcNbA&list=PL3by7evD3F51Cf9QnsAEdgSQ4cz7HQZX5)
 * A PDF version of the schematic can be found [here](2065-Z80-programmer.pdf).

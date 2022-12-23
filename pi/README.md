@@ -1,11 +1,16 @@
 # Software for a Raspberry PI and 2065-Z80-programmer
 
+To compile the flash tool, install:
+```
+sudo apt install libi2c-dev
+```
 Copy these files onto a PI and type `make`
 
 To verify that your FLASH programmer board is recognized by the Raspberry PI,
 use the `i2cdetect` application like this:
 
 ```
+sudo apt install i2c-tools
 pi@bot1:~/2065-Z80-programmer/pi$ i2cdetect -y 1
      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
 00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
