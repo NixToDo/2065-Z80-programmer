@@ -28,7 +28,9 @@
 // The PI communicates with the 2065-Z80-programmer using I2C.
 
 // un-comment for the AM29F040B
-//#define AM29F040B
+#define AM29F040B
+// un-comment for the AM29F010B
+#define AM29F010B
 
 
 
@@ -443,13 +445,13 @@ uint16_t flash_read_product_id(int iic)
 	flash_send_sdp(iic, 0x90);				// Software ID read
 
 	uint16_t mfg = bus_read_cycle(iic, 0);	// read a byte from address 0
-#ifdef AM29F040B
+#if defined(AM29F040B) || defined(AM29F010B)
 	flash_send_sdp(iic, 0x90);				// Software ID read
 #endif
 	uint16_t prod = bus_read_cycle(iic, 1);	// read a byte from address 1
 	printf("Product ID: 0x%02x, 0x%02x\n", mfg, prod);
 
-#ifndef AM29F040B
+#if ! defined(AM29F040B) && ! defined(AM29F010B)
 	flash_send_sdp(iic, 0xf0);				// Software ID Exit
 #endif
 
@@ -465,7 +467,11 @@ int flash_chip_erase(int iic)
 {
 	flash_send_sdp(iic, 0x80);
 	flash_send_sdp(iic, 0x10);
+#ifdef AM29F010B
+	usleep(1100000);	// Chip needs 1 sec to erase fully!
+#else
 	usleep(200000);		// some extra margin!
+#endif
 	return 0;
 }
 
@@ -507,15 +513,17 @@ int flash_program_byte(int iic, uint16_t addr, uint8_t data)
 *****************************************************************************/
 int main()
 {
-    int     iic;
-	char	buf[65536];
+        int     iic;
+        char    buf[65536];
 
-    iic = openIIC(I2C_DEV);
+        iic = openIIC(I2C_DEV);
 	mcp23017_init(iic);
 
 	uint16_t d = flash_read_product_id(iic);
 #ifdef AM29F040B
 	if (d != 0x01a4)
+#elif AM29F010B
+	if (d != 0x0120)
 #else
 	if (d != 0xbfb5 && d != 0xbfb6 && d != 0xbfb7)
 #endif
